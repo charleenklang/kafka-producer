@@ -26,6 +26,7 @@ func CreateProducerCmd() (*cobra.Command, error) {
 	var sslKeyLocation string
 	var topic string
 	var numMessages int
+	var ordered bool
 
 	command := cobra.Command{
 		Use: "produce",
@@ -71,7 +72,7 @@ func CreateProducerCmd() (*cobra.Command, error) {
 			if topic == "" {
 				panic(errors.Wrap(fmt.Errorf("no topic defined"), "Error parsing the topic"))
 			}
-			messages := producer_utils.GenerateMessages(topic, numMessages)
+			messages := producer_utils.GenerateMessages(topic, numMessages, ordered)
 			
 			err = Run(producer, deliveryChan, messages)
 			if err != nil {
@@ -92,6 +93,7 @@ func CreateProducerCmd() (*cobra.Command, error) {
 	command.Flags().StringVar(&sslKeyLocation, "ssl-key-location", "", "path to ssl private key")
 	command.Flags().StringVar(&topic, "topic", "", "topic to which to produce the messages to")
 	command.Flags().IntVar(&numMessages, "num-messages", 1, "number of messages to produce to the topic to")
+	command.Flags().BoolVarP(&ordered, "ordered", "i", false, "when true msgs will contain key-n...key-n+1 and value-n...value-n+1")
 	return &command, nil
 }
 
