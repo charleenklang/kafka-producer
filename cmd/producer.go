@@ -27,6 +27,7 @@ func CreateProducerCmd() (*cobra.Command, error) {
 	var topic string
 	var numMessages int
 	var ordered bool
+	var startNum int
 
 	command := cobra.Command{
 		Use: "produce",
@@ -72,7 +73,7 @@ func CreateProducerCmd() (*cobra.Command, error) {
 			if topic == "" {
 				panic(errors.Wrap(fmt.Errorf("no topic defined"), "Error parsing the topic"))
 			}
-			messages := producer_utils.GenerateMessages(topic, numMessages, ordered)
+			messages := producer_utils.GenerateMessages(topic, numMessages, startNum, ordered)
 			
 			err = Run(producer, deliveryChan, messages)
 			if err != nil {
@@ -94,6 +95,7 @@ func CreateProducerCmd() (*cobra.Command, error) {
 	command.Flags().StringVar(&topic, "topic", "", "topic to which to produce the messages to")
 	command.Flags().IntVar(&numMessages, "num-messages", 1, "number of messages to produce to the topic to")
 	command.Flags().BoolVarP(&ordered, "ordered", "i", false, "when true msgs will contain key-n...key-n+1 and value-n...value-n+1")
+	command.Flags().IntVar(&startNum, "start-num", 0, "when chosen ordered this can define the message number from which it will produce next")
 	return &command, nil
 }
 

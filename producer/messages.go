@@ -8,11 +8,11 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func GenerateMessages(topic string, numMessages int, ordered bool) []kafka.Message {
+func GenerateMessages(topic string, numMessages, startNum int, ordered bool) []kafka.Message {
 	var messages []kafka.Message
 
 	if ordered {
-		for i := 0; i < numMessages; i++ {
+		for i := startNum; i < (startNum + numMessages); i++ {
 			// Create a Kafka message.
 			message := &kafka.Message{
 				TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
